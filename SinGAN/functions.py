@@ -197,15 +197,24 @@ def save_networks(netG,netD,z,opt):
 
 def adjust_scales2image(real_,opt):
     #opt.num_scales = int((math.log(math.pow(opt.min_size / (real_.shape[2]), 1), opt.scale_factor_init))) + 1
+    opt.min_size = 25
+    opt.max_size = 2000
+    
     opt.num_scales = math.ceil((math.log(math.pow(opt.min_size / (min(real_.shape[2], real_.shape[3])), 1), opt.scale_factor_init))) + 1
+    print(f"opt.num_scales: {opt.num_scales}, opt.min_size: {opt.min_size}, real_.shape[2]: {real_.shape[2]}, real_.shape[3]: {real_.shape[3]}, opt.scale_factor_init: {opt.scale_factor_init}, pow1: {opt.min_size / (min(real_.shape[2], real_.shape[3]))}, log2: {opt.scale_factor_init}")
+    
     scale2stop = math.ceil(math.log(min([opt.max_size, max([real_.shape[2], real_.shape[3]])]) / max([real_.shape[2], real_.shape[3]]),opt.scale_factor_init))
+    print(f"scale2stop: {scale2stop}, opt.max_size: {opt.max_size}, real_.shape[2]: {real_.shape[2]}, real_.shape[3]: {real_.shape[3]}, opt.scale_factor_init: {opt.scale_factor_init}, log1: {min([opt.max_size, max([real_.shape[2], real_.shape[3]])]) / max([real_.shape[2], real_.shape[3]])}, log2: {opt.scale_factor_init}")
+    
     opt.stop_scale = opt.num_scales - scale2stop
     opt.scale1 = min(opt.max_size / max([real_.shape[2], real_.shape[3]]),1)  # min(250/max([real_.shape[0],real_.shape[1]]),1)
     real = imresize(real_, opt.scale1, opt)
     #opt.scale_factor = math.pow(opt.min_size / (real.shape[2]), 1 / (opt.stop_scale))
+    print(f"opt.num_scales: {opt.num_scales}, opt.stop_scale: {opt.stop_scale}, opt.scale1: {opt.scale1}, real.shape[2]: {real.shape[2]}, real.shape[3]: {real.shape[3]}")
     opt.scale_factor = math.pow(opt.min_size/(min(real.shape[2],real.shape[3])),1/(opt.stop_scale))
     scale2stop = math.ceil(math.log(min([opt.max_size, max([real_.shape[2], real_.shape[3]])]) / max([real_.shape[2], real_.shape[3]]),opt.scale_factor_init))
     opt.stop_scale = opt.num_scales - scale2stop
+    print(f"opt.scale_factor: {opt.scale_factor}, scale2stop: {scale2stop}, opt.stop_scale: {opt.stop_scale}")
     return real
 
 def adjust_scales2image_SR(real_,opt):
