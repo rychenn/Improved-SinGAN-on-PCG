@@ -1,3 +1,6 @@
+import sys
+sys.path.append("~/.local/lib/python3.6/site-packages/")
+
 import torch
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
